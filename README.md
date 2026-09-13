@@ -1,6 +1,6 @@
 # The Cow 🐮
 
-Juego de plataformas 2D hecho en **Unity**. Controlas a una vaquita que debe avanzar por distintos niveles, saltar entre plataformas, recolectar monedas, esquivar peligros (robots, zonas de caída) y llegar a la meta de cada nivel.
+Juego de plataformas 2D hecho en **Unity**. Controlas a una vaquita que debe avanzar por distintos niveles, saltar entre plataformas, recolectar monedas, esquivar peligros (zonas de caída) y llegar a la meta de cada nivel.
 
 El proyecto está pensado para correr tanto en **escritorio** (teclado) como en **dispositivos móviles/touch** (botones en pantalla).
 
