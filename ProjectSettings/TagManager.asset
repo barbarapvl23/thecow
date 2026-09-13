@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 3
+  tags:
+  - NextLevel
+  - Collectable
+  - DeathZone
+  - Hazard
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - Suelo
+  - Water
+  - UI
+  - Items
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 1384415935
+    locked: 0
+  - name: Entities
+    uniqueID: 3573768105
+    locked: 0
+  - name: Foreground
+    uniqueID: 1138118819
+    locked: 0
+  - name: Clouds
+    uniqueID: 455858677
+    locked: 0
+  - name: UICharacters
+    uniqueID: 3238790895
+    locked: 0
+  m_RenderingLayers:
+  - Default

@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 1d285492d342fcf4c9c63e268b675ff0
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - rigidBody: {instanceID: 0}
+  - capsuleCollider: {instanceID: 0}
+  - spriteRenderer: {instanceID: 0}
+  - clip: {fileID: 8300000, guid: 9120bab7cd9ee6945bd74da1285c316e, type: 3}
+  - clip2: {fileID: 8300000, guid: 40521b45ee768364aba8c4fc8c084011, type: 3}
+  - clip3: {fileID: 8300000, guid: 144f97d190b2346458ea9756f4380f44, type: 3}
+  - audioSource: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
