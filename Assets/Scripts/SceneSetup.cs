@@ -13,7 +13,6 @@ public class SceneSetup : MonoBehaviour
         if (LifeController.instancia != null)
         {
             LifeController.instancia.player = newPlayer;
-            LifeController.instancia.player = winnerScreen;
             LifeController.instancia.checkpoint = newCheckpoint;
             LifeController.instancia.hearts = newHearts;
             LifeController.instancia.gameOverScreen = gameOverScreen;
