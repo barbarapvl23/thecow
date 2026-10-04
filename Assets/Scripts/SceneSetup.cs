@@ -13,12 +13,11 @@ public class SceneSetup : MonoBehaviour
         if (LifeController.instancia != null)
         {
             LifeController.instancia.player = newPlayer;
-            LifeController.instancia.player = winnerScreen;
             LifeController.instancia.checkpoint = newCheckpoint;
             LifeController.instancia.hearts = newHearts;
             LifeController.instancia.gameOverScreen = gameOverScreen;
            
-            //Activar corazones según vidas actuales
+            //Activar corazones segï¿½n vidas actuales
             for (int i = 0; i < newHearts.Length; i++)
             {
                 newHearts[i].SetActive(i < LifeController.instancia.life);

@@ -21,9 +21,9 @@ public class PlayerController : MonoBehaviour
     public AudioClip clip3; // Sonido de muerte
     public AudioSource audioSource;
 
-    private TouchController touchController; // Controlador de toques para dispositivos móviles
+    private TouchController touchController; // Controlador de toques para dispositivos mï¿½viles
 
-    public int maxSaltos = 2; // Número máximo de saltos permitidos
+    public int maxSaltos = 2; // Nï¿½mero mï¿½ximo de saltos permitidos
     private int saltosRestantes; // Contador de saltos restantes
     private bool puedeSaltar = true; // Indica si el personaje puede saltar
 
@@ -34,12 +34,12 @@ public class PlayerController : MonoBehaviour
         var duplicados = FindObjectsOfType<PlayerController>();
         if (duplicados.Length > 1)
         {
-            Debug.LogWarning("Hay más de un CharacterController en la escena. Se eliminará este objeto: " + gameObject.name);
+            Debug.LogWarning("Hay mï¿½s de un CharacterController en la escena. Se eliminarï¿½ este objeto: " + gameObject.name);
             Destroy(gameObject); // Evitar duplicados
         }
         else
         {
-            Debug.Log("CharacterController único en la escena: " + gameObject.name);
+            Debug.Log("CharacterController ï¿½nico en la escena: " + gameObject.name);
         }
     }
 
@@ -47,7 +47,7 @@ public class PlayerController : MonoBehaviour
     {
         saltosRestantes = maxSaltos; // Inicializar saltos restantes
 
-        checkpointPos = transform.position; // Guardar la posición inicial del personaje
+        checkpointPos = transform.position; // Guardar la posiciï¿½n inicial del personaje
         rigidBody = GetComponent<Rigidbody2D>();
         if (rigidBody == null)
         {
@@ -64,7 +64,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        float horizontalInput = 0f;
+        float horizontalInput = Input.GetAxisRaw("Horizontal"); // Obtener entrada horizontal del teclado
 
         if (touchController != null) //Movimiento desde touch o teclado
         {
@@ -72,10 +72,6 @@ public class PlayerController : MonoBehaviour
                 horizontalInput = -1f;
             else if (touchController.moveRight)
                 horizontalInput = 1f;
-        }
-        else
-        {
-            horizontalInput = Input.GetAxisRaw("Horizontal"); // Obtener entrada horizontal del teclado si no hay touch
         }
 
         //Movimiento
@@ -92,13 +88,11 @@ public class PlayerController : MonoBehaviour
            spriteRenderer.flipX = true; // Mirar a la izquierda
                 
         //Salto
-        bool jumpInput = false;
+        bool jumpInput = Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.Space); // Entrada de salto desde barra espaciadora
 
         if (touchController != null)
-            jumpInput = touchController.jump; // Si el botón de salto está presionado en la pantalla táctil
-        else
-            jumpInput = Input.GetButtonDown("Jump"); // Si se presiona la tecla de salto en el teclado
-
+            jumpInput |= touchController.jump; // Si el botï¿½n de salto estï¿½ presionado en la pantalla tï¿½ctil
+        
         if (estaEnSuelo())
         {
             saltosRestantes = maxSaltos; // Reiniciar saltos restantes al tocar el suelo
@@ -110,20 +104,20 @@ public class PlayerController : MonoBehaviour
             rigidBody.AddForce(Vector2.up * potenciaSalto, ForceMode2D.Impulse); //Aplicar fuerza de salto
             audioSource.PlayOneShot(clip, 0.5f); //Reproducir sonido de salto
             saltosRestantes--; // Disminuir el contador de saltos restantes
-            puedeSaltar = false; // Desactivar salto temporalmente para evitar saltos múltiples
-            StartCoroutine(ReactivarSalto()); // Reiniciar la posibilidad de saltar después de un breve tiempo
+            puedeSaltar = false; // Desactivar salto temporalmente para evitar saltos mï¿½ltiples
+            StartCoroutine(ReactivarSalto()); // Reiniciar la posibilidad de saltar despuï¿½s de un breve tiempo
         }
         
     }
 
     private bool estaEnSuelo()
     {
-        // Verificar si el personaje está tocando el suelo
+        // Verificar si el personaje estï¿½ tocando el suelo
         return capsuleCollider.IsTouchingLayers(sueloLayer);
     }
 
 
-    //Este método se llama cuando el collider del personaje entra en contacto con otro collider
+    //Este mï¿½todo se llama cuando el collider del personaje entra en contacto con otro collider
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Debug.Log("Trigger detectado con: " + collision.gameObject.name);
@@ -134,14 +128,14 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        // Lógica de colisiones, como recoger objetos o activar eventos
+        // Lï¿½gica de colisiones, como recoger objetos o activar eventos
         if (collision.CompareTag("Collectable"))
         {
             audioSource.PlayOneShot(clip2, 1.2f); // Reproducir sonido de recoger monedas
             string itemType = collision.GetComponent<CollectableScripts>().itemType; // Obtener el tipo de objeto recogible
             print("You've picked up: " + itemType);
 
-            inventario.Add(itemType); // Añadir el tipo de objeto a la lista de monedas recogidas
+            inventario.Add(itemType); // Aï¿½adir el tipo de objeto a la lista de monedas recogidas
 
             CoinManager.instance.AddCoins(); // Actualizar el contador de monedas
 
@@ -152,7 +146,7 @@ public class PlayerController : MonoBehaviour
         {
             if (LifeController.instancia != null)
             {
-                LifeController.instancia.LoseLife(); // Llamar al método LoseLife del LifeController
+                LifeController.instancia.LoseLife(); // Llamar al mï¿½todo LoseLife del LifeController
             }
         }
     }
