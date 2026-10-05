@@ -8,7 +8,7 @@ public class NextLevel : MonoBehaviour
 
     void Start()
     {
-        // Asegura que el panel esté oculto al comenzar
+        // Asegura que el panel estï¿½ oculto al comenzar
         if (panelYouWin != null)
         {
             panelYouWin.SetActive(false);
@@ -21,8 +21,13 @@ public class NextLevel : MonoBehaviour
 
         if (panelYouWin != null)
         {
-            // Es el último nivel, muestra la pantalla de victoria
+            // Es el ï¿½ltimo nivel, muestra la pantalla de victoria
             panelYouWin.SetActive(true);
+
+            if (CoinManager.instance != null)
+            {
+                CoinManager.instance.MostrarResumen(panelYouWin); //Mostrar resumen de monedas del nivel
+            }
         }
         else
         {
@@ -33,7 +38,7 @@ public class NextLevel : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("No se asignó el nombre de la siguiente escena.");
+                Debug.LogWarning("No se asignï¿½ el nombre de la siguiente escena.");
             }
         }
     }

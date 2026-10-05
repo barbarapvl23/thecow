@@ -64,6 +64,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (Time.timeScale == 0f) return; // Juego en pausa: ignorar controles
+
         float horizontalInput = Input.GetAxisRaw("Horizontal"); // Obtener entrada horizontal del teclado
 
         if (touchController != null) //Movimiento desde touch o teclado
@@ -131,15 +133,29 @@ public class PlayerController : MonoBehaviour
         // L�gica de colisiones, como recoger objetos o activar eventos
         if (collision.CompareTag("Collectable"))
         {
+            collision.enabled = false; // Evitar que se recoja dos veces antes de destruirse
+            Destroy(collision.gameObject); //Destruir el objeto recogido
+
             audioSource.PlayOneShot(clip2, 1.2f); // Reproducir sonido de recoger monedas
-            string itemType = collision.GetComponent<CollectableScripts>().itemType; // Obtener el tipo de objeto recogible
+
+            CollectableScripts collectable = collision.GetComponent<CollectableScripts>();
+            if (collectable == null)
+            {
+                Debug.LogWarning("El objeto '" + collision.gameObject.name + "' tiene tag Collectable pero no tiene CollectableScripts", collision.gameObject);
+            }
+            string itemType = collectable != null ? collectable.itemType : "Coin"; // Obtener el tipo de objeto recogible
             print("You've picked up: " + itemType);
 
             inventario.Add(itemType); // A�adir el tipo de objeto a la lista de monedas recogidas
 
-            CoinManager.instance.AddCoins(); // Actualizar el contador de monedas
-
-            Destroy(collision.gameObject); //Destruir el objeto recogido
+            if (CoinManager.instance != null)
+            {
+                CoinManager.instance.AddCoins(); // Actualizar el contador de monedas
+            }
+            else
+            {
+                Debug.LogWarning("No hay CoinManager en la escena (solo existe en Level1). La moneda no se contó.");
+            }
         }
 
         if (collision.CompareTag("Hazard"))

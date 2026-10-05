@@ -7,13 +7,13 @@ using UnityEngine.SceneManagement;
 public class LifeController : MonoBehaviour
 {
     public static LifeController instancia;
-    public int life = 3; //Número de vidas del jugador
-    public Transform checkpoint; //Punto de reaparición del jugador
+    public int life = 3; //Nï¿½mero de vidas del jugador
+    public Transform checkpoint; //Punto de reapariciï¿½n del jugador
     public GameObject player; //Referencia a la vaquita
-    public GameObject[] hearts; //Array de objetos de corazón para mostrar las vidas
+    public GameObject[] hearts; //Array de objetos de corazï¿½n para mostrar las vidas
     public GameObject gameOverScreen; //Pantalla de Game Over
     public TMPro.TextMeshProUGUI coinSummaryText; //Texto de Game Over
-    private bool estaRespawneando = false; //Para evitar reapariciones múltiples
+    private bool estaRespawneando = false; //Para evitar reapariciones mï¿½ltiples
     public AudioSource audioSource; //Fuente de audio para reproducir sonidos
     private PlayerController playerController;
 
@@ -32,21 +32,61 @@ public class LifeController : MonoBehaviour
         }
         else 
         {
-            Debug.LogError("No se encontró el jugador. Asegúrate de que el objeto con el tag 'Player' existe en la escena.");
+            Debug.LogError("No se encontrï¿½ el jugador. Asegï¿½rate de que el objeto con el tag 'Player' existe en la escena.");
         }
 
         if (checkpoint == null)
         {
-            checkpoint = GameObject.FindGameObjectWithTag("Checkpoint").transform; //Buscar el checkpoint por tag
+            checkpoint = BuscarCheckpoint();
         }
 
         if (audioSource == null)
         {
-            audioSource = GetComponent<AudioSource>(); //Asignar AudioSource si no está asignado
+            audioSource = GetComponent<AudioSource>(); //Asignar AudioSource si no estï¿½ asignado
+        }
+    }
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    //Al cargar un nivel nuevo, el jugador y el checkpoint del nivel anterior ya no existen
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        StopAllCoroutines(); //Cancelar una reapariciï¿½n pendiente del nivel anterior
+        estaRespawneando = false;
+
+        player = GameObject.FindGameObjectWithTag("Player");
+        playerController = player != null ? player.GetComponent<PlayerController>() : null;
+        checkpoint = BuscarCheckpoint();
+
+        Debug.Log("LifeController reasignado en " + scene.name + ". Player: " + (player != null) + ", Checkpoint: " + (checkpoint != null));
+    }
+
+    private Transform BuscarCheckpoint()
+    {
+        GameObject cp = null;
+        try
+        {
+            cp = GameObject.FindGameObjectWithTag("Checkpoint"); //Buscar el checkpoint por tag
+        }
+        catch (UnityException)
+        {
+            //El tag "Checkpoint" no existe en el proyecto
         }
 
-        playerController = player.GetComponent<PlayerController>();
+        if (cp == null)
+        {
+            cp = GameObject.Find("Checkpoint"); //Buscar el checkpoint por nombre
+        }
 
+        return cp != null ? cp.transform : null;
     }
 
     void Awake()
@@ -60,8 +100,8 @@ public class LifeController : MonoBehaviour
         }
         else
         {
-            Debug.Log("Ya existe uno, este se destruye.");
-            Destroy(gameObject); //Evita duplicados
+            Debug.LogWarning("Ya existe un LifeController, se elimina el duplicado que hay en: " + gameObject.name, gameObject);
+            Destroy(this); //Evita duplicados (solo el componente, no el objeto que lo contiene)
         }
     }
 
@@ -71,14 +111,19 @@ public class LifeController : MonoBehaviour
 
         if (life <= 0)
         {
-            Debug.LogWarning("Ya no hay vidas al llamar a LoseLife, esto no debería pasar.");
+            Debug.LogWarning("Ya no hay vidas al llamar a LoseLife, esto no deberï¿½a pasar.");
             return; //Si no quedan vidas, no hacer nada
         }
 
         if (estaRespawneando)
         {
-            Debug.Log("Ya se está respawneando, no hacer nada.");
-            return; //Evitar reapariciones múltiples
+            Debug.Log("Ya se estï¿½ respawneando, no hacer nada.");
+            return; //Evitar reapariciones mï¿½ltiples
+        }
+
+        if (player != null)
+        {
+            playerController = player.GetComponent<PlayerController>(); //El jugador cambia en cada nivel
         }
 
         if (playerController != null)
@@ -87,17 +132,17 @@ public class LifeController : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("No se encontró el CharacterController en el jugador.");
+            Debug.LogWarning("No se encontrï¿½ el CharacterController en el jugador.");
         }
 
         life--;
-        estaRespawneando = true; //Marcar que se está respawneando
+        estaRespawneando = true; //Marcar que se estï¿½ respawneando
 
         Debug.Log("Vida perdida. Vidas restantes: " + life);   //Reducir la vida del jugador
 
         if (hearts != null && life < hearts.Length)
         {
-            hearts[life].SetActive(false); //Desactivar el corazón correspondiente
+            hearts[life].SetActive(false); //Desactivar el corazï¿½n correspondiente
         }
         else
         {
@@ -113,15 +158,13 @@ public class LifeController : MonoBehaviour
                 gameOverScreen.SetActive(true);
                 Debug.Log("Pantalla de Game Over activada.");
                 
-                if (coinSummaryText != null && CoinManager.instance != null)
+                if (CoinManager.instance != null)
                 {
-                    int totalCoins = CoinManager.instance.GetTotalCoins(); //Total de monedas recogidas en el juego
-                    int collectedCoins = CoinManager.instance.GetCollectedCoins(); //Monedas recogidas en la escena actual
-                    coinSummaryText.text = "Collected Coins: " + collectedCoins + " / " + totalCoins; //Mostrar resumen de monedas
+                    CoinManager.instance.MostrarResumen(gameOverScreen); //Mostrar resumen de monedas del nivel actual
                 }
                 else
                 {
-                    Debug.LogWarning("coinsSummaryText no asignado.");
+                    Debug.LogWarning("No hay CoinManager para mostrar el resumen de monedas.");
                 }
             }
             else
@@ -153,9 +196,9 @@ public class LifeController : MonoBehaviour
         yield return new WaitForSeconds(0.5f); //Esperar 0.5 segundos antes de reaparecer
 
         Vector3 pos = checkpoint.position + new Vector3(0, 0.5f, 0); //Reubicar al jugador en el checkpoint
-        player.transform.position = pos; //Actualizar la posición del jugador
+        player.transform.position = pos; //Actualizar la posiciï¿½n del jugador
         player.SetActive(true); //Activar al jugador
-        estaRespawneando = false; //Marcar que ya no se está respawneando
+        estaRespawneando = false; //Marcar que ya no se estï¿½ respawneando
 
         Debug.Log("Jugador reaparecido en el checkpoint: " + checkpoint.position);
     }
