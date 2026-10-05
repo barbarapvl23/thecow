@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -66,7 +67,13 @@ public class PlayerController : MonoBehaviour
     {
         if (Time.timeScale == 0f) return; // Juego en pausa: ignorar controles
 
-        float horizontalInput = Input.GetAxisRaw("Horizontal"); // Obtener entrada horizontal del teclado
+        float horizontalInput = 0f; // Obtener entrada horizontal del teclado (Input System)
+        Keyboard teclado = Keyboard.current;
+        if (teclado != null)
+        {
+            if (teclado.leftArrowKey.isPressed || teclado.aKey.isPressed) horizontalInput -= 1f;
+            if (teclado.rightArrowKey.isPressed || teclado.dKey.isPressed) horizontalInput += 1f;
+        }
 
         if (touchController != null) //Movimiento desde touch o teclado
         {
@@ -90,7 +97,7 @@ public class PlayerController : MonoBehaviour
            spriteRenderer.flipX = true; // Mirar a la izquierda
                 
         //Salto
-        bool jumpInput = Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.Space); // Entrada de salto desde barra espaciadora
+        bool jumpInput = teclado != null && teclado.spaceKey.wasPressedThisFrame; // Entrada de salto desde barra espaciadora
 
         if (touchController != null)
             jumpInput |= touchController.jump; // Si el bot�n de salto est� presionado en la pantalla t�ctil
