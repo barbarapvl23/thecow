@@ -86,6 +86,14 @@ public class LifeController : MonoBehaviour
             cp = GameObject.Find("Checkpoint"); //Buscar el checkpoint por nombre
         }
 
+        if (cp == null && player != null)
+        {
+            //El nivel no tiene checkpoint: reaparecer donde empezo el jugador
+            cp = new GameObject("Checkpoint (inicio del nivel)");
+            cp.transform.position = player.transform.position - new Vector3(0, 0.5f, 0); //Reaparecer() suma 0.5 en y
+            Debug.Log("Nivel sin checkpoint, se usara la posicion inicial del jugador: " + player.transform.position);
+        }
+
         return cp != null ? cp.transform : null;
     }
 
